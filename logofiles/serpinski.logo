@@ -1,0 +1,60 @@
+# This program is syntactically and semantically correct
+
+LOGO SERPINSKI
+
+  # Figure recursively defined
+  # N is the recursion level
+  # SIZE is the width of the figure
+
+  TO RECFIG :N :SIZE
+    IFELSE :N <= 1 [ FD :SIZE ]
+    [
+      RECFIG (:N-1) (:SIZE/3)
+      LT 60
+      RECFIG (:N-1) (:SIZE/3)
+      RT 120
+      RECFIG (:N-1) (:SIZE/3)
+      LT 60
+      RECFIG (:N-1) (:SIZE/3)
+    ]
+  END
+
+  # we assume that the origin is in the middle of
+  # the drawing area (500x500)
+  HT
+  PU      # move bottom left corner
+  BK 200  
+  RT 90
+  FD 200
+  LT 90
+  PD
+
+  REPEAT 4 [ FD 400 LT 90 ]  # draw a square frame
+
+  PU     # move up 20
+  LT 90
+  FD 20
+  RT 90
+  PD
+
+  RECFIG 3 400
+
+  PU     # move up 120
+  BK 400
+  LT 90
+  FD 120
+  RT 90
+  PD
+
+  RECFIG 5 400
+
+  PU     # move up 120
+  BK 400
+  LT 90
+  FD 120
+  RT 90
+  PD
+
+  RECFIG 10 400
+
+END

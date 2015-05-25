@@ -1,0 +1,11 @@
+# LogoTranslator - polygon.logo
+
+LOGO POLYGON
+
+   # poly word using parameter as argument to repeat
+   TO POLY :SIDES
+      REPEAT :SIDES [FD 50 RT 360/:SIDES]
+   END
+
+   POLY 5
+END

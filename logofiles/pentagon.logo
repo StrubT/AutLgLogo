@@ -1,0 +1,5 @@
+# LogoTranslator - pentagon.logo
+
+LOGO PENTAGON
+ REPEAT 5 [FD 100 RT 72]
+END

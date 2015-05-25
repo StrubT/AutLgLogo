@@ -1,0 +1,11 @@
+# LogoTranslator - repeated.logo
+
+LOGO REPEATED
+  REPEAT 4 [
+    REPEAT 4 [
+      FD REPCOUNT * 25 
+      RT 90
+    ]
+    RT 45 * REPCOUNT
+  ]
+END

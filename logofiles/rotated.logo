@@ -1,0 +1,23 @@
+# LogoTranslator - rotated.logo
+
+LOGO ROTATED
+
+  TO ROTATE :ANGLE :TIMES
+    REPEAT :TIMES [
+      FD 200
+      RT :ANGLE
+    ]
+  END
+
+  # main program
+  PU
+  RT 180
+  FD 100
+  RT 90
+  FD 20
+  RT 90
+  PD
+  # times should be 360 / gcd(angle, 360)
+  ROTATE 155 360 / 5
+  
+END

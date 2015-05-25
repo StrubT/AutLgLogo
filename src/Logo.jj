@@ -1,0 +1,137 @@
+// $Author: beo1 $
+// $Id: Logo.jj 1354 2012-12-05 14:28:28Z beo1 $
+//
+// Parser and translateor of a subset of Logo into Java
+
+options {
+   FORCE_LA_CHECK = true;
+//   DEBUG_PARSER = true;
+//   DEBUG_TOKEN_MANAGER = true;
+}
+
+PARSER_BEGIN(Logo)
+
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+public class Logo {
+
+  static private File javaFile, htmlFile;   // output files
+  static private PrintWriter pw;            // printwriter used for every output
+  static private int numIndent = 0;         // size of indentation
+
+  // to pretty-print the translation
+  // uses numIndent and pw defined as static variables in LogoParser
+  // writes in pw the numIndent times the indent string
+  public static void indent() {
+    for (int i=0; i<numIndent; i++) { pw.print("   "); }
+  }
+
+  // Main method that reads the source file ".logo" and translates it
+  // into two files: ".java" ".html"
+  public static void main(String args[]) throws ParseException,
+                                                TokenMgrError,
+                                                IOException
+  {
+    // reads the source file ".logo" (first argument of command line)
+    BufferedReader in = new BufferedReader(new FileReader(args[0]));
+    Logo parser = new Logo(in);
+    try {
+      parser.start();
+      System.out.println("DONE");
+    }
+    catch (ParseException x) { System.out.println("Syntaxtic Error"); throw x; }
+    catch (TokenMgrError x)  { System.out.println("Lexical Error"); throw x; }
+  }
+}
+PARSER_END(Logo)
+
+// skip separators
+SKIP : { <" " | "\t" | "\n" | "\r"> }
+
+// Constants, pre-defined, operators etc.
+TOKEN: { <ADD: "+">   | <SUB: "-">  | <MUL: "*"> | <DIV: "/"> }
+TOKEN: { <LPAR: "(">  | <RPAR: ")"> | <#PARSEP: ":"> }
+TOKEN: { <LBRA: "[">  | <RBRA: "]"> }
+TOKEN: { <EQ: "==">   | <NE: "!=">  }
+TOKEN: { <LT: "<">    | <GT: ">">   | <LE: "<="> | <GE: ">="> }
+TOKEN: { <AND: "AND"> | <OR: "OR"> }
+TOKEN: { <TRUE: "TRUE"> | <FALSE: "FALSE"> | <NOT: "NOT"> }
+// REPCOUNT is a pre-defined identifier rather than a keyword
+TOKEN: { <REPCOUNT: "REPCOUNT"> }
+// Keywords
+TOKEN: {
+  <CLEARSCREEN: "CS"> |
+  <PENDOWN: "PD">     | <PENUP: "PU">      |
+  <FORWARD: "FD">     | <BACKWARD: "BK">   |
+  <LEFTTURN: "LT">    | <RIGHTTURN: "RT">  |
+  <HIDETURTLE: "HT">  | <SHOWTURTLE: "ST"> |
+  <WAIT: "WAIT">      | <REPEAT: "REPEAT"> |
+  <IF: "IF">          | <IFELSE: "IFELSE"> |
+  <SUBROUTINE: "TO">  |
+  <LOGO: "LOGO">      | <END: "END">
+}
+// Numerical values, identifiers, and parameters
+TOKEN: { <#DIGIT:  ["0"-"9"]> }
+TOKEN: { <#LETTER: ["A"-"Z"]> }
+TOKEN: { <NUM: (<DIGIT>)+ | (<DIGIT>)+ "." (<DIGIT>)+ > }
+TOKEN: { <IDENTIFIER: <LETTER> ( <LETTER> | <DIGIT> )* > }
+TOKEN: { <PARAMETER: <PARSEP> <IDENTIFIER> > // removes parameter separator
+//          { matchedToken.image=image.substring(1,image.length()); }
+}
+
+void start() throws IOException:
+{ Token t; }
+{
+  // logo programs start with LOGO followed by an identifier
+  <LOGO> t = <IDENTIFIER>
+  // Creation of the output files
+//   {
+//     // Create the HTML file for the applet
+//     htmlFile = new File(t.image.toLowerCase() + ".html");
+//     pw = new PrintWriter(new FileOutputStream(htmlFile));
+//     pw.println("<html>");
+//     pw.println("  <body>");
+//     pw.println("  <applet code='" + t.image.toLowerCase() +
+//                ".class'width=600 height=600></applet>");
+//     pw.println("  </html>");
+//     pw.println("</body>");
+//     pw.close();
+//     //Create the Java file and the class
+//     javaFile = new File(t.image.toLowerCase() + ".java");
+//     pw = new PrintWriter(new FileOutputStream(javaFile));
+//     pw.println("import java.awt.Graphics;\n");
+//     pw.println("public class " + t.image.toLowerCase() +
+//                " extends java.applet.Applet {\n" );
+//     numIndent++;
+//     indent();
+//     pw.println("private LogoPrimitives logo;\n");
+//     pw.flush();
+//   }
+//  ( subroutine() )*
+//  // Open the necessary method "paint" of the applet
+//   {
+//     indent(); numIndent++;
+//     pw.println("public void paint(Graphics g) {");
+//     indent();
+//     pw.println("logo = new LogoPrimitives(this);");
+//     pw.println();
+//   }
+//  ( statement() )*
+  // close the method "paint"
+//   {
+//     numIndent--;
+//     indent();
+//     pw.println("}");
+//   }
+  // close the class
+  <END>
+//   { numIndent--; indent();
+//     pw.println("}");
+//     pw.flush(); pw.close(); }
+//   }
+}
+
+
+// ADD THE REST OF THE JAVACC RULES WITH THE JAVA CODE

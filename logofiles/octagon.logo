@@ -1,0 +1,5 @@
+# LogoTranslator - octacon.logo
+
+LOGO OCTAGON
+ REPEAT 8 [FD 100 RT 45]
+END

@@ -1,0 +1,5 @@
+# LogoTranslator - triangle.logo
+
+LOGO TRIANGLE
+ REPEAT 3 [FD 100 RT 120]
+END

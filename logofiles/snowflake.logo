@@ -1,0 +1,31 @@
+# LogoTranslator - snowflake.logo
+
+LOGO SNOWFLAKE
+
+  TO DIVSIDE :L :S
+    IFELSE :L == 1 [
+      FD :S
+    ] [
+      DIVSIDE :L - 1 :S / 3 LT 60
+      DIVSIDE :L - 1 :S / 3 RT 120
+      DIVSIDE :L - 1 :S / 3 LT 60
+      DIVSIDE :L - 1 :S / 3
+    ]
+  END
+  
+  # main program
+  PU
+  RT 180
+  FD 150
+  RT 90
+  FD 85
+  RT 90
+  PD
+  
+  # have some fun
+  REPEAT 3 [
+    DIVSIDE 5 300
+    RT 120
+  ]
+  
+END

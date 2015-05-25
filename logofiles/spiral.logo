@@ -1,0 +1,19 @@
+# LogoTranslator - Spiral Test
+
+LOGO SPIRAL
+
+  TO SPIRAL :TIMES :ANGLE
+    REPEAT :TIMES [
+      FD :TIMES - REPCOUNT + 1
+      RT :ANGLE
+    ]
+  END
+  
+  # main program
+  PU
+  LT 90
+  FD 200
+  RT 90
+  PD
+  SPIRAL 70 18
+END

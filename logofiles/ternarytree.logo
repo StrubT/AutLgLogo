@@ -1,0 +1,23 @@
+# LogoTranslator - ternarytree.logo
+
+LOGO TERNARYTREE
+  TO TREE :SIZE
+    IF :SIZE >= 5 [
+      FD :SIZE
+      TREE :SIZE * 0.7
+      LT 45 
+      TREE :SIZE * 0.7
+      RT 90 
+      TREE :SIZE * 0.7
+      LT 45 
+      BK :SIZE
+    ]
+  END
+  
+  # main program
+  LT 90
+  PU
+  BK 200
+  PD
+  TREE 70
+END

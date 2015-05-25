@@ -1,0 +1,21 @@
+# LogoTranslator - binarytree.logo
+
+LOGO BINARYTREE
+  TO TREE :SIZE
+    IF :SIZE >= 5 [
+      WAIT 100
+      FD :SIZE
+      LT 45 TREE :SIZE * 0.7
+      RT 90 TREE :SIZE * 0.7
+      LT 45 
+      BK :SIZE
+    ]
+  END
+
+  # main program
+  LT 90
+  PU
+  BK 200
+  PD
+  TREE 100
+END

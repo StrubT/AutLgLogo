@@ -1,0 +1,40 @@
+# LogoTranslator - demo.logo
+
+LOGO DEMO
+
+  # demo 0
+  REPEAT 3 [FD 100 RT 120 WAIT 750]
+
+  WAIT 1500 CS
+
+  REPEAT 100 [REPEAT 3 [FD 100 RT 120 WAIT 2] RT 10]
+
+  WAIT 1000 CS
+
+  # demo 1
+  REPEAT 1800 [FD 10 RT REPCOUNT + 0.1 WAIT 1]
+
+  WAIT 1000 CS
+
+  # demo 2
+  REPEAT 3600 [FD 10 RT REPCOUNT + 0.2]
+
+  WAIT 2000 CS
+
+  # demo 3
+  REPEAT 8 [
+    RT 45 REPEAT 6 [
+      REPEAT 90 [
+        FD 2 RT 2
+        WAIT 1
+      ]
+      RT 90
+    ]
+  ]
+
+  WAIT 2000 CS
+
+  # Demo 4
+  REPEAT 40 [REPEAT 34 [FD 12 RT 10 WAIT 1 ] RT 90]
+
+END

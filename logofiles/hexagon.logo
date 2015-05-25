@@ -1,0 +1,5 @@
+# LogoTranslator - hexagon.logo
+
+LOGO HEXAGON
+  REPEAT 6 [ FD 100 RT 60 ]
+END

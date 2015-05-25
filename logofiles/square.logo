@@ -1,0 +1,14 @@
+# Displays a square of size 100
+	
+LOGO SQUARE
+
+  # Displays a polygon of size :SIZE with :SIDES sides
+  TO POLY :SIDES :SIZE
+    REPEAT :SIDES [ FD :SIZE LT 360/:SIDES ]
+  END
+
+  POLY 4 100
+
+  ST
+
+END
