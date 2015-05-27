@@ -64,7 +64,7 @@ auxiliary.show.customizer.message=<message>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/4">
             <compilation-unit>
                 <package-root>src</package-root>
-                <source-level>1.8</source-level>
+                <source-level>1.7</source-level>
             </compilation-unit>
         </java-data>
     </configuration>
