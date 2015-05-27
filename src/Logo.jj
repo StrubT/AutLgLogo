@@ -48,7 +48,7 @@ public class Logo {
 PARSER_END(Logo)
 
 // skip separators
-SKIP : { <" " | "\t" | "\n" | "\r" | "#"(~["\n","\r"])*> }
+SKIP : { <" " | "\t" | "\n" | "\r" | "#" (~["\n", "\r"])*> }
 
 // Constants, pre-defined, operators etc.
 TOKEN: { <ADD: "+">   | <SUB: "-">  | <MUL: "*"> | <DIV: "/"> }
@@ -135,48 +135,57 @@ void start() throws IOException:
 
 
 // ADD THE REST OF THE JAVACC RULES WITH THE JAVA CODE
-void subroutine():{}
+void subroutine():
+{}
 {
-      <SUBROUTINE> (<PARAMETER>)* (statement())*
-}
-void statement():{}
-{
-      <CLEARSCREEN> | <PENDOWN> | <PENUP> | <HIDETURTLE> | <SHOWTURTLE> |
-      <FORWARD> nexpr() | <BACKWARD> nexpr() | <LEFTTURN> nexpr() | <RIGHTTURN> nexpr() |
-      <WAIT> nexpr() | 
-      <REPEAT> nexpr() <LBRA> (statement())* <RBRA> |
-      <IF> bexpr() <LBRA> (statement())* <RBRA> |
-      <IFELSE> bexpr() <LBRA> (statement())* <RBRA> <LBRA> (statement())* <RBRA> |
-      <IDENTIFIER> (nexpr())*
+	<SUBROUTINE> ( <PARAMETER> )* ( statement() )*
 }
 
-void nexpr():{}
+void statement():
+{}
 {
-  nterm() ((<ADD> | <SUB>) nterm())*
+	<CLEARSCREEN> | <PENDOWN> | <PENUP> | <HIDETURTLE> | <SHOWTURTLE> |
+	<FORWARD> nexpr() | <BACKWARD> nexpr() | <LEFTTURN> nexpr() | <RIGHTTURN> nexpr() |
+	<WAIT> nexpr() |
+	<REPEAT> nexpr() <LBRA> ( statement() )* <RBRA> |
+	<IF> bexpr() <LBRA> ( statement() )* <RBRA> |
+	<IFELSE> bexpr() <LBRA> ( statement() )* <RBRA> <LBRA> ( statement() )* <RBRA> |
+	<IDENTIFIER> ( nexpr() )*
 }
 
-void nterm():{}
+void nexpr():
+{}
 {
-  nfactor() ((<MUL> | <DIV>) nfactor())*
+	nterm() ( ( <ADD> | <SUB> ) nterm() )*
 }
 
-void nfactor():{}
+void nterm():
+{}
 {
-  <SUB> (<NUM> | <REPCOUNT> | (<PARAMETER>) | (<LPAR> nexpr() <RPAR>)) |
-  <NUM> | <REPCOUNT> | (<PARAMETER>) | (<LPAR> nexpr() <RPAR>)
+  nfactor() ( ( <MUL> | <DIV> ) nfactor() )*
 }
 
-void bexpr():{}
+void nfactor():
+{}
 {
-  bterm() (<OR> bterm())*
+  <SUB> ( <NUM> | <REPCOUNT> | <PARAMETER> | <LPAR> nexpr() <RPAR> ) |
+  <NUM> | <REPCOUNT> | <PARAMETER> | <LPAR> nexpr() <RPAR>
 }
 
-void bterm():{}
+void bexpr():
+{}
 {
-  bfactor() (<AND> bfactor())*
+  bterm() ( <OR> bterm() )*
 }
 
-void bfactor():{}
+void bterm():
+{}
+{
+  bfactor() ( <AND> bfactor() )*
+}
+
+void bfactor():
+{}
 {
   <TRUE> | <FALSE> | <NOT> <LPAR> bexpr() <RPAR> |
   nexpr() ( <EQ> | <NE> | <LT> | <GT> | <LE> | <GE> ) nexpr()
