@@ -48,7 +48,7 @@ public class Logo {
 PARSER_END(Logo)
 
 // skip separators
-SKIP : { <" " | "\t" | "\n" | "\r"> }
+SKIP : { <" " | "\t" | "\n" | "\r" | "#"(~["\n","\r"])*> }
 
 // Constants, pre-defined, operators etc.
 TOKEN: { <ADD: "+">   | <SUB: "-">  | <MUL: "*"> | <DIV: "/"> }
@@ -109,7 +109,7 @@ void start() throws IOException:
 //     pw.println("private LogoPrimitives logo;\n");
 //     pw.flush();
 //   }
-//  ( subroutine() )*
+  ( subroutine() )*
 //  // Open the necessary method "paint" of the applet
 //   {
 //     indent(); numIndent++;
@@ -118,7 +118,7 @@ void start() throws IOException:
 //     pw.println("logo = new LogoPrimitives(this);");
 //     pw.println();
 //   }
-//  ( statement() )*
+  ( statement() )*
   // close the method "paint"
 //   {
 //     numIndent--;
@@ -135,3 +135,49 @@ void start() throws IOException:
 
 
 // ADD THE REST OF THE JAVACC RULES WITH THE JAVA CODE
+void subroutine():{}
+{
+      <SUBROUTINE> (<PARAMETER>)* (statement())*
+}
+void statement():{}
+{
+      <CLEARSCREEN> | <PENDOWN> | <PENUP> | <HIDETURTLE> | <SHOWTURTLE> |
+      <FORWARD> nexpr() | <BACKWARD> nexpr() | <LEFTTURN> nexpr() | <RIGHTTURN> nexpr() |
+      <WAIT> nexpr() | 
+      <REPEAT> nexpr() <LBRA> (statement())* <RBRA> |
+      <IF> bexpr() <LBRA> (statement())* <RBRA> |
+      <IFELSE> bexpr() <LBRA> (statement())* <RBRA> <LBRA> (statement())* <RBRA> |
+      <IDENTIFIER> (nexpr())*
+}
+
+void nexpr():{}
+{
+  nterm() ((<ADD> | <SUB>) nterm())*
+}
+
+void nterm():{}
+{
+  nfactor() ((<MUL> | <DIV>) nfactor())*
+}
+
+void nfactor():{}
+{
+  <SUB> (<NUM> | <REPCOUNT> | (<PARAMETER>) | (<LPAR> nexpr() <RPAR>)) |
+  <NUM> | <REPCOUNT> | (<PARAMETER>) | (<LPAR> nexpr() <RPAR>)
+}
+
+void bexpr():{}
+{
+  bterm() (<OR> bterm())*
+}
+
+void bterm():{}
+{
+  bfactor() (<AND> bfactor())*
+}
+
+void bfactor():{}
+{
+  <TRUE> | <FALSE> | <NOT> <LPAR> bexpr() <RPAR> |
+  nexpr() ( <EQ> | <NE> | <LT> | <GT> | <LE> | <GE> ) nexpr()
+}
