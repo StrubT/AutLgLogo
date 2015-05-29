@@ -137,7 +137,7 @@ void start() throws IOException:
 void subroutine():
 {}
 {
-	<SUBROUTINE> ( <PARAMETER> )* ( statement() )*
+	<SUBROUTINE> ( <PARAMETER> )* ( statement() )* <END>
 }
 
 void statement():
