@@ -5,8 +5,8 @@
 
 options {
    FORCE_LA_CHECK = true;
-//   DEBUG_PARSER = true;
-//   DEBUG_TOKEN_MANAGER = true;
+   DEBUG_PARSER = true;
+   DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(Logo)
@@ -87,30 +87,30 @@ void start() throws IOException:
   // logo programs start with LOGO followed by an identifier
   <LOGO> t = <IDENTIFIER>
   // Creation of the output files
-//   {
-//     // Create the HTML file for the applet
-//     htmlFile = new File(t.image.toLowerCase() + ".html");
-//     pw = new PrintWriter(new FileOutputStream(htmlFile));
-//     pw.println("<html>");
-//     pw.println("  <body>");
-//     pw.println("  <applet code='" + t.image.toLowerCase() +
-//                ".class'width=600 height=600></applet>");
-//     pw.println("  </html>");
-//     pw.println("</body>");
-//     pw.close();
-//     //Create the Java file and the class
-//     javaFile = new File(t.image.toLowerCase() + ".java");
-//     pw = new PrintWriter(new FileOutputStream(javaFile));
-//     pw.println("import java.awt.Graphics;\n");
-//     pw.println("public class " + t.image.toLowerCase() +
-//                " extends java.applet.Applet {\n" );
-//     numIndent++;
-//     indent();
-//     pw.println("private LogoPrimitives logo;\n");
-//     pw.flush();
-//   }
+  {
+    // Create the HTML file for the applet
+    htmlFile = new File(t.image.toLowerCase() + ".html");
+    pw = new PrintWriter(new FileOutputStream(htmlFile));
+    pw.println("<html>");
+    pw.println("  <body>");
+    pw.println("  <applet code='" + t.image.toLowerCase() +
+               ".class'width=600 height=600></applet>");
+    pw.println("  </html>");
+    pw.println("</body>");
+    pw.close();
+    //Create the Java file and the class
+    javaFile = new File(t.image.toLowerCase() + ".java");
+    pw = new PrintWriter(new FileOutputStream(javaFile));
+    pw.println("import java.awt.Graphics;\n");
+    pw.println("public class " + t.image.toLowerCase() +
+               " extends java.applet.Applet {\n" );
+    numIndent++;
+    indent();
+    pw.println("private LogoPrimitives logo;\n");
+    pw.flush();
+  }
   ( subroutine() )*
-//  // Open the necessary method "paint" of the applet
+  // Open the necessary method "paint" of the applet
 //   {
 //     indent(); numIndent++;
 //     pw.println("public void paint(Graphics g) {");
@@ -127,10 +127,10 @@ void start() throws IOException:
 //   }
   // close the class
   <END>
-//   { numIndent--; indent();
-//     pw.println("}");
-//     pw.flush(); pw.close(); }
-//   }
+  { numIndent--; indent();
+    pw.println("}");
+    pw.flush(); pw.close();
+  }
 }
 
 

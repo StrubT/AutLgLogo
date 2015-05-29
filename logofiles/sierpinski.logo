@@ -1,0 +1,35 @@
+# Sierpinski triangle 
+
+LOGO SIERPINSKI
+
+  # Sierpinsky triangle
+  # N is the recursion level
+  # LENGHT is the width of the figure
+
+  TO TRIANGLE :N :LENGTH
+    IF :N != 0
+    [
+	  REPEAT 3 [
+	    TRIANGLE :N-1 :LENGTH/2
+		FD :LENGTH
+		RT 120
+  	  ]
+	]	  
+  END
+
+  # we assume that the origin is in the middle of
+  # the drawing area (500x500)
+
+  PU      # move bottom left corner
+  BK 200  
+  RT 90
+  FD 200
+  LT 90
+  PD
+
+  HT
+  LT 60
+
+  TRIANGLE 6 400
+
+END

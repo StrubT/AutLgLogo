@@ -1,6 +1,6 @@
 // $Author: beo1 $
 //
-// $Id: LogoPrimitives.java 1352 2012-12-05 14:23:29Z beo1 $
+// $Id: LogoPrimitives.java 2020 2015-05-28 20:03:52Z beo1 $
 //
 // Contains all the required primitives of our Logo language
 
