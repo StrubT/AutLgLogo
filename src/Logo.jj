@@ -25,7 +25,7 @@ public class Logo {
 	// uses numIndent and pw defined as static variables in LogoParser
 	// writes in pw the numIndent times the indent string
 	public static void indent() {
-		for (int i=0; i<numIndent; i++) { pw.print("   "); }
+		for (int i=0; i<numIndent; i++) { pw.print("	"); }
 	}
 
 	// Main method that reads the source file ".logo" and translates it
@@ -91,10 +91,10 @@ void start() throws IOException:
 		htmlFile = new File(t.image.toLowerCase() + ".html");
 		pw = new PrintWriter(new FileOutputStream(htmlFile));
 		pw.println("<html>");
-		pw.println("  <body>");
-		pw.println("  <applet code='" + t.image.toLowerCase() + ".class'width=600 height=600></applet>");
-		pw.println("  </html>");
-		pw.println("</body>");
+		pw.println("	<body>");
+		pw.println("		<applet code=\"" + t.image.toLowerCase() + ".class\" width=\"600\" height=\"600\"></applet>");
+		pw.println("	</body>");
+		pw.println("</html>");
 		pw.close();
 		//Create the Java file and the class
 		javaFile = new File(t.image.toLowerCase() + ".java");
