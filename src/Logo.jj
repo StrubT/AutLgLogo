@@ -19,7 +19,8 @@ public class Logo {
 
 	static private File javaFile, htmlFile;   // output files
 	static private PrintWriter pw;            // printwriter used for every output
-	static private int numIndent = 0;         // size of indentation
+	static private int numIndent = 0;         // level of indentation
+	static private int numRepeat = -1;         // level of repetition
 
 	// to pretty-print the translation
 	// uses numIndent and pw defined as static variables in LogoParser
@@ -110,20 +111,22 @@ void start() throws IOException:
 	( subroutine() )*
 
 	// Open the necessary method "paint" of the applet
-//{
-//	indent(); numIndent++;
-//	pw.println("public void paint(Graphics g) {");
-//	indent();
-//	pw.println("logo = new LogoPrimitives(this);");
-//	pw.println();
-//}
+	{
+		indent(); numIndent++;
+		pw.println("public void paint(Graphics g) {");
+		indent();
+		pw.println("logo = new LogoPrimitives(this);");
+		pw.println();
+	}
+
 	( statement() )*
+
 	// close the method "paint"
-//{
-//	numIndent--;
-//	indent();
-//	pw.println("}");
-//}
+	{
+		numIndent--;
+		indent();
+		pw.println("}");
+	}
 
 	// close the class
 	<END>
@@ -135,57 +138,253 @@ void start() throws IOException:
 }
 
 void subroutine():
-{}
 {
-	<SUBROUTINE> ( <PARAMETER> )* ( statement() )* <END>
+	boolean first = true;
+	Token t;
+}
+{
+	<SUBROUTINE>
+	t = <IDENTIFIER> {
+		indent(); pw.print("private void " + t.image + "(");
+		numIndent++;
+	}
+	(
+		t = <PARAMETER> {
+			if (first) first = false;
+			else pw.print(", ");
+			pw.print("double " + t.image.substring(1));
+		}
+	)* {
+		pw.println(") {");
+	}
+	( statement() )* {
+		numIndent--;
+		indent(); pw.println("}");
+	}
+	<END>
 }
 
 void statement():
-{}
 {
-	<CLEARSCREEN> | <PENDOWN> | <PENUP> | <HIDETURTLE> | <SHOWTURTLE> |
-	<FORWARD> nexpr() | <BACKWARD> nexpr() | <LEFTTURN> nexpr() | <RIGHTTURN> nexpr() |
-	<WAIT> nexpr() |
-	<REPEAT> nexpr() <LBRA> ( statement() )* <RBRA> |
-	<IF> bexpr() <LBRA> ( statement() )* <RBRA> |
-	<IFELSE> bexpr() <LBRA> ( statement() )* <RBRA> <LBRA> ( statement() )* <RBRA> |
-	<IDENTIFIER> ( nexpr() )*
+	boolean first = true;
+	Token t;
+	String n, b;
+	char c;
+}
+{
+	<CLEARSCREEN> {
+		indent(); pw.println("logo.cs();");
+	}
+	| <PENDOWN> {
+		indent(); pw.println("logo.pd();");
+	}
+	| <PENUP> {
+		indent(); pw.println("logo.pu();");
+	}
+	| <HIDETURTLE> {
+		indent(); pw.println("logo.ht();");
+	}
+	| <SHOWTURTLE> {
+		indent(); pw.println("logo.st();");
+	}
+	| <FORWARD> n = nexpr() {
+		indent(); pw.println("logo.fd(" + n + ");");
+	}
+	| <BACKWARD> n = nexpr() {
+		indent(); pw.println("logo.bk(" + n + ");");
+	}
+	| <LEFTTURN>  n = nexpr() {
+		indent(); pw.println("logo.lt(" + n + ");");
+	}
+	| <RIGHTTURN> n = nexpr() {
+		indent(); pw.println("logo.rt(" + n + ");");
+	}
+	| <WAIT> n = nexpr() {
+		indent(); pw.println("logo.wait(" + n + ");");
+	}
+	| <REPEAT> n = nexpr()
+		<LBRA> {
+			numRepeat++;
+			c = Character.toChars('i' + numRepeat)[0];
+			indent(); pw.println("for (int " + c + " = 1; " + c + " <= " + n + "; " + c + "++) {");
+			numIndent++;
+		}
+		( statement() )*
+		<RBRA> {
+			numIndent--; numRepeat--;
+			indent(); pw.println("}");
+		}
+	| <IF> b = bexpr()
+		<LBRA> {
+			indent(); pw.println("if (" + b + ") {");
+			numIndent++;
+		}
+		( statement() )*
+		<RBRA> {
+			numIndent--;
+			indent(); pw.println("}");
+		}
+	| <IFELSE> b = bexpr()
+		<LBRA> {
+			indent(); pw.println("if (" + b + ") {");
+			numIndent++;
+		}
+		( statement() )*
+		<RBRA> <LBRA> {
+			numIndent--;
+			indent(); pw.println("} else {");
+			numIndent++;
+		}
+		( statement() )*
+		<RBRA> {
+			numIndent--;
+			indent(); pw.println("}");
+		}
+	| t = <IDENTIFIER> {
+			indent(); pw.print(t.image + "(");
+		}
+		(
+			n = nexpr() {
+				if (first) first = false;
+				else pw.print(", ");
+				pw.print(n);
+			}
+		)* {
+			pw.println(");");
+		}
 }
 
-void nexpr():
-{}
+String nexpr():
 {
-	nterm() ( ( <ADD> | <SUB> ) nterm() )*
+	StringBuilder r = new StringBuilder();
+	Token o;
+	String n;
+}
+{
+	n = nterm() {
+		r.append(n);
+	}
+	(
+		( o = <ADD> | o = <SUB> )
+		n = nterm() {
+			r.append(o.image);
+			r.append(n);
+		}
+	)* {
+		return r.toString();
+	}
 }
 
-void nterm():
-{}
+String nterm():
 {
-	nfactor() ( ( <MUL> | <DIV> ) nfactor() )*
+	StringBuilder r = new StringBuilder();
+	Token o;
+	String n;
+}
+{
+	n = nfactor() {
+		r.append(n);
+	}
+	(
+		( o = <MUL> | o = <DIV> )
+		n = nfactor() {
+			r.append(o.image);
+			r.append(n);
+		}
+	)* {
+		return r.toString();
+	}
 }
 
-void nfactor():
-{}
+String nfactor():
 {
-	<SUB> ( <NUM> | <REPCOUNT> | <PARAMETER> | <LPAR> nexpr() <RPAR> ) |
-	<NUM> | <REPCOUNT> | <PARAMETER> | <LPAR> nexpr() <RPAR>
+	String n;
+}
+{
+	<SUB> n = nfactor_pos() {
+		return "-" + n;
+	}
+	| n = nfactor_pos() {
+		return n;
+	}
 }
 
-void bexpr():
-{}
+String nfactor_pos():
 {
-	bterm() ( <OR> bterm() )*
+	Token n;
+	String m;
+}
+{
+	n = <NUM> {
+		return n.image;
+	}
+	| <REPCOUNT> {
+		return Character.toString(Character.toChars('i' + numRepeat)[0]);
+	}
+	| n = <PARAMETER> {
+		return n.image.substring(1);
+	}
+	| <LPAR> m = nexpr() <RPAR> {
+		return "(" + m + ")";
+	}
 }
 
-void bterm():
-{}
+String bexpr():
 {
-	bfactor() ( <AND> bfactor() )*
+	StringBuilder r = new StringBuilder();
+	String b;
+}
+{
+	b = bterm() {
+		r.append(b);
+	}
+	(
+		<OR>
+		b = bterm() {
+			r.append(" or ");
+			r.append(b);
+		}
+	)* {
+		return r.toString();
+	}
 }
 
-void bfactor():
-{}
+String bterm():
 {
-	<TRUE> | <FALSE> | <NOT> <LPAR> bexpr() <RPAR> |
-	nexpr() ( <EQ> | <NE> | <LT> | <GT> | <LE> | <GE> ) nexpr()
+	StringBuilder r = new StringBuilder();
+	String b;
+}
+{
+	b = bfactor() {
+		r.append(b);
+	}
+	(
+		<AND>
+		b = bfactor() {
+			r.append(" and ");
+			r.append(b);
+		}
+	)* {
+		return r.toString();
+	}
+}
+
+String bfactor():
+{
+	Token o;
+	String b, l, r;
+}
+{
+	<TRUE> {
+		return "true";
+	}
+	| <FALSE> {
+		return "false";
+	}
+	| <NOT> <LPAR> b = bexpr() <RPAR> {
+		return "not (" + b + ")";
+	}
+	| l = nexpr() ( o = <EQ> | o = <NE> | o = <LT> | o = <GT> | o = <LE> | o = <GE> ) r = nexpr() {
+		return l + o.image + r;
+	}
 }
