@@ -46,7 +46,7 @@ public class Logo {
 PARSER_END(Logo)
 
 // skip separators
-SKIP : { <" " | "\t" | "\n" | "\r" | "#" (~["\n", "\r"])*> }
+SKIP : { <" " | "\t" | "\n" | "\r" | "#" (~["\n", "\r"])* > }
 
 // Constants, pre-defined, operators etc.
 TOKEN: { <ADD: "+">   | <SUB: "-">  | <MUL: "*"> | <DIV: "/"> }
