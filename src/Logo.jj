@@ -159,7 +159,7 @@ void subroutine():
 	}
 	( statement() )* {
 		numIndent--;
-		indent(); pw.println("}");
+		indent(); pw.println("}\n");
 	}
 	<END>
 }
