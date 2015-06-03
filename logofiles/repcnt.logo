@@ -1,0 +1,23 @@
+
+LOGO REPCNT
+
+	REPEAT 5 [
+		REPEAT 9 [
+			FD 10
+			PU
+			FD REPCOUNT * 5
+			PD
+
+			WAIT 100
+		]
+		PU
+		BK 315
+		PD
+
+		RT 90
+		FD REPCOUNT * 5
+		LT 90
+
+		WAIT 250
+	]
+END

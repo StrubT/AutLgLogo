@@ -159,7 +159,7 @@ void subroutine():
 	}
 	( statement() )* {
 		numIndent--;
-		indent(); pw.println("}");
+		indent(); pw.println("}\n");
 	}
 	<END>
 }
@@ -267,8 +267,7 @@ String nexpr():
 	(
 		( o = <ADD> | o = <SUB> )
 		n = nterm() {
-			r.append(o.image);
-			r.append(n);
+			r.append(o.image).append(n);
 		}
 	)* {
 		return r.toString();
@@ -288,8 +287,7 @@ String nterm():
 	(
 		( o = <MUL> | o = <DIV> )
 		n = nfactor() {
-			r.append(o.image);
-			r.append(n);
+			r.append(o.image).append(n);
 		}
 	)* {
 		return r.toString();
@@ -318,7 +316,7 @@ String nfactor_pos():
 	n = <NUM> {
 		return n.image;
 	}
-	| <REPCOUNT> {
+	| <REPCOUNT> { //user innermost repeat counter (source: http://fmslogo.sourceforge.net/manual/command-repcount.html)
 		return Character.toString(Character.toChars('i' + numRepeat)[0]);
 	}
 	| n = <PARAMETER> {
@@ -341,8 +339,7 @@ String bexpr():
 	(
 		<OR>
 		b = bterm() {
-			r.append(" or ");
-			r.append(b);
+			r.append(" or ").append(b);
 		}
 	)* {
 		return r.toString();
@@ -361,8 +358,7 @@ String bterm():
 	(
 		<AND>
 		b = bfactor() {
-			r.append(" and ");
-			r.append(b);
+			r.append(" and ").append(b);
 		}
 	)* {
 		return r.toString();
