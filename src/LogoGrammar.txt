@@ -2,7 +2,7 @@ Program    = "LOGO" Identifier { Subroutine } { Statement } "END"
 
 Subroutine = "TO" Identifier { Parameter } { Statement } "END"
 
-Statement  = "CS" | "PD" | "PU" | "HT" | "ST" 
+Statement  = "CS" | "PD" | "PU" | "HT" | "ST"
            | "FD" NExpr | "BK" NExpr | "LT" NExpr | "RT" NExpr
            | "WAIT" NExpr
            | "REPEAT" NExpr "[" { Statement } "]"
@@ -14,15 +14,16 @@ NExpr      = NTerm { ( "+" | "-" )  NTerm }
 
 NTerm      = NFactor { ( "*" | "/" ) NFactor }
 
-NFactor    = "-" ( Number | REPCOUNT | Parameter | "(" NExpr ")" ) | 
-	     Number | REPCOUNT | Parameter | "(" NExpr ")" 
+NFactor    = "-" NFactorPos | NFactorPos
+
+NFactorPos = Number | REPCOUNT | Parameter | "(" NExpr ")"
 
 BExpr      = BTerm { "OR" BTerm }
 
 BTerm      = BFactor { "AND" BFactor }
 
-BFactor    = "TRUE" | "FALSE" | "NOT" "(" BExpr ")" 
-	   | NExpr ( "==" | "!=" | "<" | ">" | "<=" | ">=" )  NExpr 
+BFactor    = "TRUE" | "FALSE" | "NOT" "(" BExpr ")"
+           | NExpr ( "==" | "!=" | "<" | ">" | "<=" | ">=" )  NExpr
 
 Comments start with "#" with scope until the newline
 
