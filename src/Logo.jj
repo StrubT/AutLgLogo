@@ -20,13 +20,13 @@ public class Logo {
 	static private File javaFile, htmlFile;   // output files
 	static private PrintWriter pw;            // printwriter used for every output
 	static private int numIndent = 0;         // level of indentation
-	static private int numRepeat = -1;         // level of repetition
+	static private int numRepeat = -1;        // level of repetition
 
 	// to pretty-print the translation
 	// uses numIndent and pw defined as static variables in LogoParser
 	// writes in pw the numIndent times the indent string
 	public static void indent() {
-		for (int i=0; i<numIndent; i++) { pw.print("	"); }
+		pw.print(new String(new char[numIndent]).replace('\0', '\t'));
 	}
 
 	// Main method that reads the source file ".logo" and translates it
@@ -39,9 +39,8 @@ public class Logo {
 		try {
 			parser.start();
 			System.out.println("DONE");
-		}
-		catch (ParseException x) { System.out.println("Syntaxtic Error"); throw x; }
-		catch (TokenMgrError x)  { System.out.println("Lexical Error"); throw x; }
+		} catch (ParseException x) { System.out.println("Syntaxtic Error"); throw x; }
+		  catch (TokenMgrError x)  { System.out.println("Lexical Error"); throw x; }
 	}
 }
 PARSER_END(Logo)
@@ -91,20 +90,21 @@ void start() throws IOException:
 		// Create the HTML file for the applet
 		htmlFile = new File(t.image.toLowerCase() + ".html");
 		pw = new PrintWriter(new FileOutputStream(htmlFile));
-		pw.println("<html>");
-		pw.println("	<body>");
-		pw.println("		<applet code=\"" + t.image.toLowerCase() + ".class\" width=\"600\" height=\"600\"></applet>");
-		pw.println("	</body>");
-		pw.println("</html>");
+		indent(); pw.println("<!DOCTYPE html>");
+		indent(); pw.println("<html>"); numIndent++;
+		indent(); pw.println("<head>"); numIndent++;
+		indent(); pw.println("<title>AutLg - Logo Parser / Translator - " + t.image.toLowerCase() + "</title>"); numIndent--;
+		indent(); pw.println("</head>");
+		indent(); pw.println("<body>"); numIndent++;
+		indent(); pw.println("<applet code=\"" + t.image.toLowerCase() + ".class\" width=\"600\" height=\"600\"></applet>"); numIndent--;
+		indent(); pw.println("</body>"); numIndent--;
+		indent(); pw.println("</html>");
 		pw.close();
 		//Create the Java file and the class
 		javaFile = new File(t.image.toLowerCase() + ".java");
 		pw = new PrintWriter(new FileOutputStream(javaFile));
-		pw.println("import java.awt.Graphics;\n");
-		pw.println("public class " + t.image.toLowerCase() + " extends java.applet.Applet {\n" );
-		numIndent++;
-		indent();
-		pw.println("private LogoPrimitives logo;\n");
+		indent(); pw.println("\npublic class " + t.image.toLowerCase() + " extends java.applet.Applet {\n" ); numIndent++;
+		indent(); pw.println("private LogoPrimitives logo;\n");
 		pw.flush();
 	}
 
@@ -112,11 +112,8 @@ void start() throws IOException:
 
 	// Open the necessary method "paint" of the applet
 	{
-		indent(); numIndent++;
-		pw.println("public void paint(Graphics g) {");
-		indent();
-		pw.println("logo = new LogoPrimitives(this);");
-		pw.println();
+		indent(); pw.println("public void paint(java.awt.Graphics g) {"); numIndent++;
+		indent(); pw.println("logo = new LogoPrimitives(this);\n");
 	}
 
 	( statement() )*
@@ -124,15 +121,14 @@ void start() throws IOException:
 	// close the method "paint"
 	{
 		numIndent--;
-		indent();
-		pw.println("}");
+		indent(); pw.println("}");
 	}
 
 	// close the class
 	<END>
 	{
-		numIndent--; indent();
-		pw.println("}");
+		numIndent--;
+		indent(); pw.println("}");
 		pw.flush(); pw.close();
 	}
 }
@@ -145,19 +141,21 @@ void subroutine():
 {
 	<SUBROUTINE>
 	t = <IDENTIFIER> {
-		indent(); pw.print("private void " + t.image + "(");
+		indent(); pw.print("private void " + t.image.toLowerCase() + "(");
 		numIndent++;
 	}
 	(
 		t = <PARAMETER> {
 			if (first) first = false;
 			else pw.print(", ");
-			pw.print("double " + t.image.substring(1));
+			pw.print("double " + t.image.substring(1).toLowerCase());
 		}
-	)* {
+	)*
+	{
 		pw.println(") {");
 	}
-	( statement() )* {
+	( statement() )*
+	{
 		numIndent--;
 		indent(); pw.println("}\n");
 	}
@@ -204,8 +202,8 @@ void statement():
 	}
 	| <REPEAT> n = nexpr()
 		<LBRA> {
-			numRepeat++;
-			c = Character.toChars('i' + numRepeat)[0];
+			c = Character.toChars('i' + ++numRepeat)[0]; // no handling for more than 18 repetition levels
+			if (c > 'z') throw new ParseException("No more than " + ('z' - 'i' + 1) + " repetition levels allowed.");
 			indent(); pw.println("for (int " + c + " = 1; " + c + " <= " + n + "; " + c + "++) {");
 			numIndent++;
 		}
@@ -241,7 +239,7 @@ void statement():
 			indent(); pw.println("}");
 		}
 	| t = <IDENTIFIER> {
-			indent(); pw.print(t.image + "(");
+			indent(); pw.print(t.image.toLowerCase() + "(");
 		}
 		(
 			n = nexpr() {
@@ -249,7 +247,8 @@ void statement():
 				else pw.print(", ");
 				pw.print(n);
 			}
-		)* {
+		)*
+		{
 			pw.println(");");
 		}
 }
@@ -269,7 +268,8 @@ String nexpr():
 		n = nterm() {
 			r.append(o.image).append(n);
 		}
-	)* {
+	)*
+	{
 		return r.toString();
 	}
 }
@@ -289,7 +289,8 @@ String nterm():
 		n = nfactor() {
 			r.append(o.image).append(n);
 		}
-	)* {
+	)*
+	{
 		return r.toString();
 	}
 }
@@ -316,11 +317,11 @@ String nfactor_pos():
 	n = <NUM> {
 		return n.image;
 	}
-	| <REPCOUNT> { //user innermost repeat counter (source: http://fmslogo.sourceforge.net/manual/command-repcount.html)
+	| <REPCOUNT> { // use innermost repeat counter --- source: http://fmslogo.sourceforge.net/manual/command-repcount.html
 		return Character.toString(Character.toChars('i' + numRepeat)[0]);
 	}
 	| n = <PARAMETER> {
-		return n.image.substring(1);
+		return n.image.substring(1).toLowerCase();
 	}
 	| <LPAR> m = nexpr() <RPAR> {
 		return "(" + m + ")";
@@ -341,7 +342,8 @@ String bexpr():
 		b = bterm() {
 			r.append(" or ").append(b);
 		}
-	)* {
+	)*
+	{
 		return r.toString();
 	}
 }
@@ -360,7 +362,8 @@ String bterm():
 		b = bfactor() {
 			r.append(" and ").append(b);
 		}
-	)* {
+	)*
+	{
 		return r.toString();
 	}
 }
@@ -377,10 +380,13 @@ String bfactor():
 	| <FALSE> {
 		return "false";
 	}
-	| <NOT> <LPAR> b = bexpr() <RPAR> {
-		return "not (" + b + ")";
-	}
-	| l = nexpr() ( o = <EQ> | o = <NE> | o = <LT> | o = <GT> | o = <LE> | o = <GE> ) r = nexpr() {
-		return l + o.image + r;
-	}
+	| <NOT>
+		<LPAR> b = bexpr() <RPAR> {
+			return "not (" + b + ")";
+		}
+	| l = nexpr()
+		( o = <EQ> | o = <NE> | o = <LT> | o = <GT> | o = <LE> | o = <GE> )
+		r = nexpr() {
+			return l + o.image + r;
+		}
 }
