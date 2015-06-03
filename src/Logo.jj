@@ -316,7 +316,7 @@ String nfactor_pos():
 	n = <NUM> {
 		return n.image;
 	}
-	| <REPCOUNT> {
+	| <REPCOUNT> { //user innermost repeat counter (source: http://fmslogo.sourceforge.net/manual/command-repcount.html)
 		return Character.toString(Character.toChars('i' + numRepeat)[0]);
 	}
 	| n = <PARAMETER> {
