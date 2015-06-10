@@ -1,5 +1,5 @@
 # Displays a square of size 100
-	
+
 LOGO SQUARE
 
   # Displays a polygon of size :SIZE with :SIDES sides
@@ -9,6 +9,6 @@ LOGO SQUARE
 
   POLY 4 100
 
-  HT
+  ST
 
 END
