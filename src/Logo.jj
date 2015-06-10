@@ -266,7 +266,7 @@ String nexpr():
 	(
 		( o = <ADD> | o = <SUB> )
 		n = nterm() {
-			r.append(o.image).append(n);
+			r.append(" ").append(o.image).append(" ").append(n);
 		}
 	)*
 	{
@@ -287,7 +287,7 @@ String nterm():
 	(
 		( o = <MUL> | o = <DIV> )
 		n = nfactor() {
-			r.append(o.image).append(n);
+			r.append(" ").append(o.image).append(" ").append(n);
 		}
 	)*
 	{
@@ -387,6 +387,6 @@ String bfactor():
 	| l = nexpr()
 		( o = <EQ> | o = <NE> | o = <LT> | o = <GT> | o = <LE> | o = <GE> )
 		r = nexpr() {
-			return l + o.image + r;
+			return l + " " + o.image + " " + r;
 		}
 }
