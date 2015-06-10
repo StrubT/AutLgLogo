@@ -1,0 +1,139 @@
+# master test program
+
+LOGO MASTER
+
+	TO WINDOWRECT :WIDTH :HEIGHT # rectangular window
+
+		REPEAT 2 [
+
+			FD :HEIGHT
+			RT 90
+			FD :WIDTH
+			RT 90
+		]
+
+	END
+
+	TO WINDOWOCTA :LENGTH # octagonal window
+
+		REPEAT 8 [
+
+			IFELSE NOT (REPCOUNT <= 3 AND REPCOUNT >= 3 OR REPCOUNT < 8 AND REPCOUNT > 6) [
+				FD :LENGTH
+			] [
+				FD :LENGTH / 2
+				RT 90
+				FD :LENGTH / 3
+				BK :LENGTH / 3
+				LT 90
+				FD :LENGTH / 2
+			]
+			RT 45
+		]
+
+	END
+
+	REPEAT 3 [ # show 'ellipsis' to simulate 'calculation'
+
+		FD (REPCOUNT + 1) * 2.5
+		PU
+		FD 5
+		PD
+
+		IF REPCOUNT != 3 OR FALSE [
+			WAIT 125
+		]
+		IF TRUE AND REPCOUNT == 3 [
+			WAIT 250
+			CS
+		]
+	]
+
+	ST # show initial turtle position
+	HT
+
+	PU # move to initial position (bottom-left corner)
+	FD -150
+	LT 90
+	BK 200
+	PD
+
+	FD 300 # draw a simple house
+	RT 45
+	FD 212
+	RT 90
+	FD 212
+	RT 45
+	FD 300
+	RT 90
+	FD 300
+	RT 90
+
+	PU # draw door
+	RT 90
+	FD 50
+	LT 90
+	PD
+	FD 50
+	RT 90
+	FD 25
+	RT 90
+	FD 10
+	BK 10
+	LT 90
+	BK 25
+	LT 90
+	FD 50
+	RT 90
+	FD 50
+	RT 90
+	FD 100
+	PU
+	LT 90
+	BK 100
+	LT 90
+	PD
+
+	PU # draw 'rectangular' windows
+	RT 90
+	FD 150
+	LT 90
+	FD 50
+	PD
+	WINDOWRECT 50 50
+	PU
+	RT 90
+	FD 75
+	LT 90
+	PD
+	WINDOWRECT 25 50
+	PU
+	RT 90
+	FD 25
+	LT 90
+	PD
+	WINDOWRECT 25 50
+	PU
+	BK 50
+	RT 90
+	BK 150 + 75 + 25
+	LT 90
+	PD
+
+	PU # draw 'round' window
+	FD 300 - 25
+	RT 90
+	FD 165
+	RT 180
+	PD
+	WINDOWOCTA 30
+	PU
+	RT 180
+	BK 165
+	LT 90
+	BK 300 - 25
+	PD
+
+	ST # show final turtle position
+
+END

@@ -340,7 +340,7 @@ String bexpr():
 	(
 		<OR>
 		b = bterm() {
-			r.append(" or ").append(b);
+			r.append(" || ").append(b);
 		}
 	)*
 	{
@@ -360,7 +360,7 @@ String bterm():
 	(
 		<AND>
 		b = bfactor() {
-			r.append(" and ").append(b);
+			r.append(" && ").append(b);
 		}
 	)*
 	{
@@ -382,7 +382,7 @@ String bfactor():
 	}
 	| <NOT>
 		<LPAR> b = bexpr() <RPAR> {
-			return "not (" + b + ")";
+			return "!(" + b + ")";
 		}
 	| l = nexpr()
 		( o = <EQ> | o = <NE> | o = <LT> | o = <GT> | o = <LE> | o = <GE> )
